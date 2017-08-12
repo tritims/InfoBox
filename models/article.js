@@ -4,15 +4,15 @@ let mongoose = require('mongoose');
 let articlSchema = mongoose.Schema({
   title: {
     type: String,
-    required: false
+    required: true
   },
   author: {
     type: String,
-    required: false
+    required: true
   },
   body: {
     type: String,
-    required: false
+    required: true
   }
 });
 
