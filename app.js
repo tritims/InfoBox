@@ -83,97 +83,13 @@ app.get('/', function(req, res){
         articles: articles
       });
     }
-
   });
-})
-
-//Get single article
-app.get('/article/:id', function(req, res){
-  Article.findById(req.params.id, function(err, article){
-    res.render('article', {
-      article: article
-    })
-  })
-})
-
-//Add Route
-app.get('/articles/add',function(req,res){
-  res.render('add_article',{
-    title: 'Add article'
-  })
-})
-
-//Edit Route
-app.get('/article/edit/:id', function(req, res){
-  Article.findById(req.params.id, function(err, article){
-    res.render('edit_article',{
-      title: 'Edit Article',
-      article: article
-    });
-  });
-})
-
-//Add submit post Route
-app.post('/articles/add', function(req, res){
-  req.checkBody('title', 'Title is required').notEmpty();
-  req.checkBody('author', 'Author is required').notEmpty();
-  req.checkBody('body', 'Body is required').notEmpty();
-
-  //Get errors
-  let errors = req.validationErrors();
-
-  if(errors){
-    res.render('add_article',{
-      errors: errors,
-      title: 'Add article'
-    })
-  }
-  else{
-    let article = new Article();
-    article.title = req.body.title;
-    article.author = req.body.author;
-    article.body = req.body.body;
-
-    article.save(function(err){
-      if(err){
-        console.log(err);
-      }else{
-        req.flash('success','Articles added');
-        res.redirect('/');
-      }
-    });
-  }
 });
 
-//Edit submit post route
-app.post('/articles/edit/:id', function(req, res){
-  let article = {};
-  article.title = req.body.title;
-  article.author = req.body.author;
-  article.body = req.body.body;
+//Point to route files
+let articles = require('./routes/articles');
+app.use('/articles',articles);
 
-  let query = {_id: req.params.id};
-
-  Article.update(query, article, function(err){
-    if(err){
-      console.log(err);
-    }else{
-      req.flash('success','Article updated');
-      res.redirect('/');
-    }
-  })
-})
-
-//Delete Route
-app.delete('/article/:id', function(req, res){
-  let query = {_id: req.params.id};
-  Article.remove(query, function(err){
-    if(err){
-      console.log(err);
-    }
-    res.send('Success');
-  })
-})
 
 //Start server
 app.listen(3000, function(){
